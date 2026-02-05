@@ -403,12 +403,12 @@ img {
 .about-photo-img {
     position: relative;
     z-index: 1;
-}
-
-.about-photo-img img {
     width: 300px;
-    height: auto;
+    height: 400px;
+    object-fit: cover;
+    object-position: right top; /* Crop left and bottom */
     filter: grayscale(100%);
+    border-radius: 8px;
 }
 
 .photo-placeholder-about {
