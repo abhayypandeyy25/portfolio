@@ -15,3 +15,7 @@ npm-debug.log
 # Build output (if added later)
 dist/
 build/
+.vercel
+
+# Server-side scripts with credentials
+google-apps-script.js

@@ -46,8 +46,8 @@
         if (savedTheme) {
             setTheme(savedTheme);
         } else {
-            // Use system preference if no saved theme
-            setTheme(getSystemTheme());
+            // Default to light theme
+            setTheme('light');
         }
     }
 
@@ -231,6 +231,54 @@
         // Initial check for scroll position
         handleNavScroll();
         updateActiveNavLink();
+
+        // Ribbon click scrolls to PM CTA
+        const topRibbon = document.getElementById('topRibbon');
+        if (topRibbon) {
+            topRibbon.addEventListener('click', function() {
+                const pmCta = document.querySelector('.pm-cta-banner');
+                if (pmCta) {
+                    pmCta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    pmCta.querySelector('input').focus();
+                }
+            });
+        }
+
+        // PM Plugins form submission -> Google Sheets
+        const pmPluginForm = document.getElementById('pmPluginForm');
+        if (pmPluginForm) {
+            pmPluginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const emailInput = document.getElementById('pmPluginEmail');
+                const email = emailInput.value;
+                const btn = this.querySelector('button');
+                const originalText = btn.textContent;
+                btn.textContent = 'Sending...';
+                btn.disabled = true;
+
+                var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzUg80aGDZ_eT4_dlEnN9_5SjZrDIcvlcy9G9ze8pvjGjTTogZqYUJnnXgUmFYR0Wjrag/exec';
+
+                var DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1woJgTqyq57mYc14mLI50BzmQXsUgVcI5?usp=sharing';
+
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'email=' + encodeURIComponent(email)
+                }).then(function() {
+                    pmPluginForm.style.display = 'none';
+                    document.getElementById('pmPrivacy').style.display = 'none';
+                    document.getElementById('pmSuccess').style.display = 'block';
+                    setTimeout(function() {
+                        window.open(DRIVE_FOLDER_URL, '_blank');
+                    }, 800);
+                }).catch(function() {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    alert('Something went wrong. Please try again.');
+                });
+            });
+        }
 
         // Add visible class to hero elements immediately
         const heroElements = document.querySelectorAll('.hero .fade-in');
