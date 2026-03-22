@@ -63,12 +63,12 @@ function doPost(e) {
     var timestamp = new Date().toISOString();
     var source = e.parameter.source || 'portfolio';
 
-    // Check for duplicate
+    // Check for duplicate (per source — same email can sign up for different projects)
     var data = sheet.getDataRange().getValues();
     for (var i = 1; i < data.length; i++) {
-      if (data[i][0] === email) {
+      if (data[i][0] === email && data[i][2] === source) {
         return ContentService.createTextOutput(
-          JSON.stringify({ status: 'duplicate', message: 'Email already registered' })
+          JSON.stringify({ status: 'duplicate', message: 'Email already registered for this project' })
         ).setMimeType(ContentService.MimeType.JSON);
       }
     }

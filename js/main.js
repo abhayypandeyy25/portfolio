@@ -264,7 +264,7 @@
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: 'email=' + encodeURIComponent(email)
+                    body: 'email=' + encodeURIComponent(email) + '&source=pm-plugins'
                 }).then(function() {
                     pmPluginForm.style.display = 'none';
                     document.getElementById('pmPrivacy').style.display = 'none';
