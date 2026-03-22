@@ -454,34 +454,32 @@ img {
 .twin-cta-banner {
     width: 100vw;
     margin-left: calc(-50vw + 50%);
-    background: var(--text-primary);
-    padding: 40px 24px;
-    border-top: 3px solid var(--accent);
+    background: var(--bg-secondary);
+    padding: 48px 24px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 }
 
 .twin-cta-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 24px;
     max-width: 900px;
     margin: 0 auto;
 }
 
 .twin-card {
-    border-radius: 16px;
-    padding: 32px;
-    position: relative;
-    overflow: hidden;
-}
-
-.twin-card-dark {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    color: #ffffff;
-}
-
-.twin-card-light {
     background: var(--bg-primary);
     color: var(--text-primary);
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.twin-card:hover {
+    box-shadow: 0 8px 30px var(--shadow);
+    transform: translateY(-2px);
 }
 
 .twin-badge {
@@ -492,15 +490,7 @@ img {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 12px;
-}
-
-.twin-card-dark .twin-badge {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.twin-card-light .twin-badge {
+    margin-bottom: 14px;
     background: var(--accent-light);
     color: var(--accent);
 }
@@ -511,42 +501,25 @@ img {
     font-weight: 700;
     margin-bottom: 10px;
     line-height: 1.2;
+    color: var(--text-primary);
 }
 
 .twin-desc {
     font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 16px;
-}
-
-.twin-card-dark .twin-desc {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.twin-card-light .twin-desc {
+    line-height: 1.7;
+    margin-bottom: 18px;
     color: var(--text-secondary);
 }
 
 .twin-desc strong {
     font-weight: 700;
-}
-
-.twin-card-dark .twin-desc strong {
-    color: #ffffff;
-}
-
-.twin-card-light .twin-desc strong {
-    color: var(--accent);
-}
-
-[data-theme="dark"] .twin-card-light .twin-desc strong {
-    color: #e06666;
+    color: var(--text-primary);
 }
 
 .twin-stats-row {
     display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 22px;
 }
 
 .twin-stat {
@@ -554,24 +527,14 @@ img {
     border-radius: 8px;
     font-size: 12px;
     font-weight: 500;
-}
-
-.twin-card-dark .twin-stat {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.twin-card-dark .twin-stat strong {
-    color: #ffffff;
-}
-
-.twin-card-light .twin-stat {
-    background: var(--bg-tertiary);
+    background: var(--bg-secondary);
     color: var(--text-secondary);
+    border: 1px solid var(--border-light);
 }
 
-.twin-card-light .twin-stat strong {
+.twin-stat strong {
     color: var(--text-primary);
+    font-weight: 700;
 }
 
 .twin-email-form {
@@ -583,41 +546,23 @@ img {
     flex: 1;
     padding: 12px 14px;
     font-size: 14px;
-    border: 2px solid transparent;
+    border: 1.5px solid var(--border);
     border-radius: 8px;
     outline: none;
     font-family: inherit;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     transition: border-color var(--transition-fast);
 }
 
-.twin-card-dark .twin-email-form input {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-}
-
-.twin-card-dark .twin-email-form input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
-}
-
-.twin-card-dark .twin-email-form input:focus {
-    border-color: var(--accent);
-    background: rgba(255, 255, 255, 0.12);
-}
-
-.twin-card-light .twin-email-form input {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-}
-
-.twin-card-light .twin-email-form input:focus {
+.twin-email-form input:focus {
     border-color: var(--accent);
 }
 
 .twin-email-form button {
     padding: 12px 20px;
-    background: var(--accent);
-    color: #ffffff;
+    background: var(--text-primary);
+    color: var(--bg-primary);
     border: none;
     border-radius: 8px;
     font-size: 13px;
@@ -630,20 +575,13 @@ img {
 }
 
 .twin-email-form button:hover {
-    opacity: 0.9;
+    opacity: 0.85;
     transform: translateY(-1px);
 }
 
 .twin-privacy {
     font-size: 11px;
     margin-top: 10px;
-}
-
-.twin-card-dark .twin-privacy {
-    color: rgba(255, 255, 255, 0.35);
-}
-
-.twin-card-light .twin-privacy {
     color: var(--text-muted);
 }
 
@@ -653,9 +591,9 @@ img {
     padding: 14px;
     font-size: 14px;
     font-weight: 500;
-    color: #6ecf6e;
-    background: rgba(110, 207, 110, 0.1);
-    border: 1px solid rgba(110, 207, 110, 0.2);
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 /* Twin CTA Mobile */
