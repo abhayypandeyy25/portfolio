@@ -280,6 +280,41 @@
             });
         }
 
+        // AI Leadership Team form submission -> Google Sheets -> GitHub
+        var aiTeamForm = document.getElementById('aiTeamForm');
+        if (aiTeamForm) {
+            aiTeamForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var emailInput = document.getElementById('aiTeamEmail');
+                var email = emailInput.value;
+                var btn = this.querySelector('button');
+                var originalText = btn.textContent;
+                btn.textContent = 'Sending...';
+                btn.disabled = true;
+
+                var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzUg80aGDZ_eT4_dlEnN9_5SjZrDIcvlcy9G9ze8pvjGjTTogZqYUJnnXgUmFYR0Wjrag/exec';
+                var GITHUB_REPO_URL = 'https://github.com/abhayypandeyy25/ai-leadership-team';
+
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'email=' + encodeURIComponent(email) + '&source=ai-leadership-team'
+                }).then(function() {
+                    aiTeamForm.style.display = 'none';
+                    document.getElementById('aiTeamPrivacy').style.display = 'none';
+                    document.getElementById('aiTeamSuccess').style.display = 'block';
+                    setTimeout(function() {
+                        window.open(GITHUB_REPO_URL, '_blank');
+                    }, 800);
+                }).catch(function() {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    alert('Something went wrong. Please try again.');
+                });
+            });
+        }
+
         // Add visible class to hero elements immediately
         const heroElements = document.querySelectorAll('.hero .fade-in');
         setTimeout(() => {
