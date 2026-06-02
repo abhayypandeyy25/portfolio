@@ -262,9 +262,9 @@ img { max-width: 100%; height: auto; display: block; }
 /* ========================================
    SECTION COMMON
    ======================================== */
-section { padding: 72px 0; }
+section { padding: 64px 0; }
 
-.section-head { margin-bottom: 36px; }
+.section-head { margin-bottom: 28px; }
 .section-eyebrow {
     display: inline-block;
     font-size: 13px; font-weight: 600;
@@ -293,7 +293,7 @@ section { padding: 72px 0; }
 .build-card {
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 26px 24px;
+    padding: 22px;
     background: var(--bg);
     transition: var(--transition);
 }
@@ -303,7 +303,7 @@ section { padding: 72px 0; }
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 11px; font-weight: 600; text-transform: uppercase;
     letter-spacing: 0.06em; color: var(--amber);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 .build-badge .dot {
     width: 6px; height: 6px; border-radius: 50%; background: var(--amber);
@@ -312,11 +312,11 @@ section { padding: 72px 0; }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
 .build-name {
-    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
-    color: var(--text); margin-bottom: 6px;
+    font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--text); margin-bottom: 4px;
 }
-.build-kicker { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 12px; }
-.build-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+.build-kicker { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+.build-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
 
 /* ========================================
    PRODUCTS — shipped
@@ -332,12 +332,12 @@ section { padding: 72px 0; }
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 26px;
+    padding: 22px;
     transition: var(--transition);
 }
 .product-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); border-color: var(--border-strong); }
 
-.product-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.product-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .product-cat { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
 .product-status {
     font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px;
@@ -345,8 +345,8 @@ section { padding: 72px 0; }
 }
 .product-status.dev { background: var(--accent-soft); color: var(--accent); }
 
-.product-name { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
-.product-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; flex-grow: 1; margin-bottom: 18px; }
+.product-name { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
+.product-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.55; flex-grow: 1; margin-bottom: 16px; }
 
 .product-link {
     display: inline-flex; align-items: center; gap: 6px;
@@ -368,7 +368,7 @@ section { padding: 72px 0; }
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 28px;
+    padding: 24px;
     transition: var(--transition);
 }
 .value-card:hover { box-shadow: var(--shadow); border-color: var(--border-strong); }
@@ -377,13 +377,13 @@ section { padding: 72px 0; }
     display: inline-block; font-size: 11px; font-weight: 600;
     text-transform: uppercase; letter-spacing: 0.06em;
     color: var(--accent); background: var(--accent-soft);
-    padding: 4px 10px; border-radius: 20px; margin-bottom: 14px;
+    padding: 4px 10px; border-radius: 20px; margin-bottom: 12px;
 }
-.value-title { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
-.value-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 16px; }
+.value-title { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
+.value-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 14px; }
 .value-desc strong { color: var(--text); font-weight: 600; }
 
-.value-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.value-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .value-stat {
     font-size: 12px; font-weight: 500; color: var(--text-secondary);
     background: var(--surface-soft); border: 1px solid var(--border);
