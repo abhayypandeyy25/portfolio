@@ -1,82 +1,24 @@
 /**
- * Abhay Pandey Portfolio - Main JavaScript
- * Handles theme toggle, navigation, and scroll animations
+ * Abhay Pandey Portfolio — Main JS
+ * Navigation, scroll animations, and email-capture forms.
  */
 
-(function() {
+(function () {
     'use strict';
 
-    // ========================================
-    // DOM Elements
-    // ========================================
-    const html = document.documentElement;
-    const navbar = document.getElementById('navbar');
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.getElementById('navMenu');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const themeToggle = document.getElementById('themeToggle');
-    const fadeElements = document.querySelectorAll('.fade-in');
+    var navbar = document.getElementById('navbar');
+    var navToggle = document.getElementById('navToggle');
+    var navMenu = document.getElementById('navMenu');
+    var navLinks = document.querySelectorAll('.nav-link');
 
-    // ========================================
-    // Theme Management
-    // ========================================
-    const THEME_KEY = 'portfolio-theme';
+    var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzUg80aGDZ_eT4_dlEnN9_5SjZrDIcvlcy9G9ze8pvjGjTTogZqYUJnnXgUmFYR0Wjrag/exec';
+    var GITHUB_REPO_URL = 'https://github.com/abhayypandeyy25/ai-leadership-team';
+    var DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1woJgTqyq57mYc14mLI50BzmQXsUgVcI5?usp=sharing';
 
-    function getSystemTheme() {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-
-    function getSavedTheme() {
-        return localStorage.getItem(THEME_KEY);
-    }
-
-    function setTheme(theme) {
-        html.setAttribute('data-theme', theme);
-        localStorage.setItem(THEME_KEY, theme);
-    }
-
-    function toggleTheme() {
-        const currentTheme = html.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        setTheme(newTheme);
-    }
-
-    function initTheme() {
-        const savedTheme = getSavedTheme();
-        if (savedTheme) {
-            setTheme(savedTheme);
-        } else {
-            // Default to light theme
-            setTheme('light');
-        }
-    }
-
-    // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        // Only auto-switch if user hasn't manually set a preference
-        if (!getSavedTheme()) {
-            setTheme(e.matches ? 'dark' : 'light');
-        }
-    });
-
-    // ========================================
-    // Navigation - Scroll Effect
-    // ========================================
+    // ---- Navigation ----
     function handleNavScroll() {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-    }
-
-    // ========================================
-    // Mobile Navigation Toggle
-    // ========================================
-    function toggleMobileNav() {
-        navToggle.classList.toggle('active');
-        navMenu.classList.toggle('active');
-        document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        if (window.scrollY > 20) navbar.classList.add('scrolled');
+        else navbar.classList.remove('scrolled');
     }
 
     function closeMobileNav() {
@@ -85,252 +27,133 @@
         document.body.style.overflow = '';
     }
 
-    // ========================================
-    // Smooth Scroll for Navigation Links
-    // ========================================
+    function toggleMobileNav() {
+        var open = navMenu.classList.toggle('active');
+        navToggle.classList.toggle('active');
+        document.body.style.overflow = open ? 'hidden' : '';
+    }
+
     function handleNavClick(e) {
-        const href = this.getAttribute('href');
-
-        // Only handle internal links
-        if (href.startsWith('#')) {
+        var href = this.getAttribute('href');
+        if (href && href.charAt(0) === '#') {
             e.preventDefault();
-            const targetId = href.substring(1);
-            const targetElement = document.getElementById(targetId);
-
-            if (targetElement) {
-                // Close mobile nav if open
+            var target = document.getElementById(href.substring(1));
+            if (target) {
                 closeMobileNav();
-
-                // Calculate offset for fixed navbar
-                const navHeight = navbar.offsetHeight;
-                const targetPosition = targetElement.offsetTop - navHeight;
-
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
+                var top = target.getBoundingClientRect().top + window.scrollY - navbar.offsetHeight - 8;
+                window.scrollTo({ top: top, behavior: 'smooth' });
             }
         }
     }
 
-    // ========================================
-    // Intersection Observer for Fade Animations
-    // ========================================
-    function initFadeAnimations() {
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px 0px -50px 0px',
-            threshold: 0.1
-        };
+    function updateActiveNavLink() {
+        var sections = document.querySelectorAll('section[id], header[id]');
+        var pos = window.scrollY + navbar.offsetHeight + 120;
+        sections.forEach(function (section) {
+            var top = section.offsetTop;
+            if (pos >= top && pos < top + section.offsetHeight) {
+                var id = section.getAttribute('id');
+                navLinks.forEach(function (link) {
+                    link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+                });
+            }
+        });
+    }
 
-        const observerCallback = (entries, observer) => {
-            entries.forEach(entry => {
+    // ---- Fade-in animations ----
+    function initFadeAnimations() {
+        var els = document.querySelectorAll('.fade-in');
+        if (!('IntersectionObserver' in window)) {
+            els.forEach(function (el) { el.classList.add('visible'); });
+            return;
+        }
+        var observer = new IntersectionObserver(function (entries, obs) {
+            entries.forEach(function (entry) {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
                 }
             });
-        };
+        }, { rootMargin: '0px 0px -40px 0px', threshold: 0.1 });
+        els.forEach(function (el) { observer.observe(el); });
+    }
 
-        const observer = new IntersectionObserver(observerCallback, observerOptions);
+    // ---- Email capture ----
+    // Posts to Google Sheets, then opens the destination in a new tab.
+    function wireForm(formId, opts) {
+        var form = document.getElementById(formId);
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var input = document.getElementById(opts.inputId);
+            var email = input.value;
+            var btn = form.querySelector('button');
+            var original = btn.textContent;
+            btn.textContent = 'Sending…';
+            btn.disabled = true;
 
-        fadeElements.forEach(element => {
-            observer.observe(element);
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'email=' + encodeURIComponent(email) + '&source=' + encodeURIComponent(opts.source)
+            }).then(function () {
+                form.style.display = 'none';
+                var note = document.getElementById(opts.noteId);
+                if (note) note.style.display = 'none';
+                var success = document.getElementById(opts.successId);
+                if (success) success.style.display = 'block';
+                setTimeout(function () { window.open(opts.dest, '_blank'); }, 800);
+            }).catch(function () {
+                btn.textContent = original;
+                btn.disabled = false;
+                alert('Something went wrong. Please try again.');
+            });
         });
     }
 
-    // ========================================
-    // Active Navigation Link Highlighting
-    // ========================================
-    function updateActiveNavLink() {
-        const sections = document.querySelectorAll('section[id]');
-        const scrollPosition = window.scrollY + navbar.offsetHeight + 100;
-
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            const sectionId = section.getAttribute('id');
-
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${sectionId}`) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
-    }
-
-    // ========================================
-    // Back to Top Button
-    // ========================================
-    function handleBackToTop(e) {
-        e.preventDefault();
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    }
-
-    // ========================================
-    // Keyboard Navigation
-    // ========================================
-    function handleKeyboard(e) {
-        // Close mobile nav on Escape
-        if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-            closeMobileNav();
-        }
-    }
-
-    // ========================================
-    // Initialize
-    // ========================================
+    // ---- Init ----
     function init() {
-        // Initialize theme
-        initTheme();
-
-        // Theme toggle
-        if (themeToggle) {
-            themeToggle.addEventListener('click', toggleTheme);
-        }
-
-        // Scroll events
         window.addEventListener('scroll', handleNavScroll, { passive: true });
         window.addEventListener('scroll', updateActiveNavLink, { passive: true });
 
-        // Navigation
-        if (navToggle) {
-            navToggle.addEventListener('click', toggleMobileNav);
-        }
+        if (navToggle) navToggle.addEventListener('click', toggleMobileNav);
+        navLinks.forEach(function (link) { link.addEventListener('click', handleNavClick); });
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', handleNavClick);
-        });
-
-        // Back to top
-        const backToTop = document.querySelector('.back-to-top');
+        var backToTop = document.querySelector('.back-to-top');
         if (backToTop) {
-            backToTop.addEventListener('click', handleBackToTop);
+            backToTop.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
         }
 
-        // Keyboard
-        document.addEventListener('keydown', handleKeyboard);
-
-        // Close mobile nav when clicking outside
-        document.addEventListener('click', (e) => {
-            if (navMenu.classList.contains('active') &&
-                !navMenu.contains(e.target) &&
-                !navToggle.contains(e.target)) {
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && navMenu.classList.contains('active')) closeMobileNav();
+        });
+        document.addEventListener('click', function (e) {
+            if (navMenu.classList.contains('active') && !navMenu.contains(e.target) && !navToggle.contains(e.target)) {
                 closeMobileNav();
             }
         });
 
-        // Initialize animations
-        initFadeAnimations();
+        // AI Leadership Team (hero + free-value section)
+        wireForm('aiTeamForm', { inputId: 'aiTeamEmail', noteId: 'aiTeamPrivacy', successId: 'aiTeamSuccess', source: 'ai-leadership-team', dest: GITHUB_REPO_URL });
+        wireForm('aiTeamForm2', { inputId: 'aiTeamEmail2', noteId: 'aiTeamPrivacy2', successId: 'aiTeamSuccess2', source: 'ai-leadership-team', dest: GITHUB_REPO_URL });
+        // PM Advisor & Coach
+        wireForm('pmPluginForm', { inputId: 'pmPluginEmail', noteId: 'pmPrivacy', successId: 'pmSuccess', source: 'pm-plugins', dest: DRIVE_FOLDER_URL });
 
-        // Initial check for scroll position
+        initFadeAnimations();
         handleNavScroll();
         updateActiveNavLink();
 
-        // Ribbon click scrolls to PM CTA
-        const topRibbon = document.getElementById('topRibbon');
-        if (topRibbon) {
-            topRibbon.addEventListener('click', function() {
-                const pmCta = document.querySelector('.pm-cta-banner');
-                if (pmCta) {
-                    pmCta.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    pmCta.querySelector('input').focus();
-                }
-            });
-        }
-
-        // PM Plugins form submission -> Google Sheets
-        const pmPluginForm = document.getElementById('pmPluginForm');
-        if (pmPluginForm) {
-            pmPluginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const emailInput = document.getElementById('pmPluginEmail');
-                const email = emailInput.value;
-                const btn = this.querySelector('button');
-                const originalText = btn.textContent;
-                btn.textContent = 'Sending...';
-                btn.disabled = true;
-
-                var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzUg80aGDZ_eT4_dlEnN9_5SjZrDIcvlcy9G9ze8pvjGjTTogZqYUJnnXgUmFYR0Wjrag/exec';
-
-                var DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1woJgTqyq57mYc14mLI50BzmQXsUgVcI5?usp=sharing';
-
-                fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: 'email=' + encodeURIComponent(email) + '&source=pm-plugins'
-                }).then(function() {
-                    pmPluginForm.style.display = 'none';
-                    document.getElementById('pmPrivacy').style.display = 'none';
-                    document.getElementById('pmSuccess').style.display = 'block';
-                    setTimeout(function() {
-                        window.open(DRIVE_FOLDER_URL, '_blank');
-                    }, 800);
-                }).catch(function() {
-                    btn.textContent = originalText;
-                    btn.disabled = false;
-                    alert('Something went wrong. Please try again.');
-                });
-            });
-        }
-
-        // AI Leadership Team form submission -> Google Sheets -> GitHub
-        var aiTeamForm = document.getElementById('aiTeamForm');
-        if (aiTeamForm) {
-            aiTeamForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                var emailInput = document.getElementById('aiTeamEmail');
-                var email = emailInput.value;
-                var btn = this.querySelector('button');
-                var originalText = btn.textContent;
-                btn.textContent = 'Sending...';
-                btn.disabled = true;
-
-                var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzUg80aGDZ_eT4_dlEnN9_5SjZrDIcvlcy9G9ze8pvjGjTTogZqYUJnnXgUmFYR0Wjrag/exec';
-                var GITHUB_REPO_URL = 'https://github.com/abhayypandeyy25/ai-leadership-team';
-
-                fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: 'email=' + encodeURIComponent(email) + '&source=ai-leadership-team'
-                }).then(function() {
-                    aiTeamForm.style.display = 'none';
-                    document.getElementById('aiTeamPrivacy').style.display = 'none';
-                    document.getElementById('aiTeamSuccess').style.display = 'block';
-                    setTimeout(function() {
-                        window.open(GITHUB_REPO_URL, '_blank');
-                    }, 800);
-                }).catch(function() {
-                    btn.textContent = originalText;
-                    btn.disabled = false;
-                    alert('Something went wrong. Please try again.');
-                });
-            });
-        }
-
-        // Add visible class to hero elements immediately
-        const heroElements = document.querySelectorAll('.hero .fade-in');
-        setTimeout(() => {
-            heroElements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.classList.add('visible');
-                }, index * 100);
-            });
-        }, 100);
+        // Reveal hero immediately
+        var heroEls = document.querySelectorAll('.hero .fade-in');
+        heroEls.forEach(function (el, i) {
+            setTimeout(function () { el.classList.add('visible'); }, 80 + i * 90);
+        });
     }
 
-    // Run when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
 })();
